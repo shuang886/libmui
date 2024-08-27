@@ -273,7 +273,7 @@ mui_window_handle_keyboard(
 //		printf("%s  %s handled it\n", __func__, win->title);
 		return true;
 	}
-//	printf("%s %s checkint controls\n", __func__, win->title);
+//	printf("%s %s checking controls\n", __func__, win->title);
 	/*
 	 * Start with the control in focus, if there's any
 	 */

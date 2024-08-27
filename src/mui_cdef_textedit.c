@@ -317,6 +317,13 @@ _mui_glyph_to_byte_offset(
 }
 
 /*
+	███    ███ ███████  █████  ███████ ██    ██ ██████  ███████
+	████  ████ ██      ██   ██ ██      ██    ██ ██   ██ ██
+	██ ████ ██ █████   ███████ ███████ ██    ██ ██████  █████
+	██  ██  ██ ██      ██   ██      ██ ██    ██ ██   ██ ██
+	██      ██ ███████ ██   ██ ███████  ██████  ██   ██ ███████
+*/
+/*
  * Calculate the 3 rectangles that represent the graphical selection.
  * The 'start' is the first line of the selection, or the position of the
  * carret if the selection is empty.
@@ -569,6 +576,21 @@ mui_textedit_set_text(
 	_mui_textedit_refresh_measure(te);
 }
 
+uint
+mui_textedit_get_text(
+		mui_control_t * 			c,
+		char * 						text,
+		uint 						max)
+{
+	mui_textedit_control_t *te = (mui_textedit_control_t *)c;
+	uint tl = te->text.count - 1;
+	if (tl > max)
+		tl = max;
+	memcpy(text, te->text.e, tl);
+	text[tl] = 0;
+	return tl;
+}
+
 /* this one allows passing -1 etc, which is handy of cursor movement */
 static void
 _mui_textedit_select_signed(
@@ -618,6 +640,13 @@ mui_textedit_set_selection(
 	_mui_textedit_select_signed(te, glyph_start, glyph_end);
 }
 
+/*
+	██████  ██████   █████  ██     ██ ██ ███    ██  ██████
+	██   ██ ██   ██ ██   ██ ██     ██ ██ ████   ██ ██
+	██   ██ ██████  ███████ ██  █  ██ ██ ██ ██  ██ ██   ███
+	██   ██ ██   ██ ██   ██ ██ ███ ██ ██ ██  ██ ██ ██    ██
+	██████  ██   ██ ██   ██  ███ ███  ██ ██   ████  ██████
+*/
 static void
 mui_textedit_draw(
 		mui_window_t * 	win,
@@ -743,6 +772,13 @@ done:
 	mui_drawable_clip_pop(dr);
 }
 
+/*
+	███    ███  ██████  ██    ██ ███████ ███████
+	████  ████ ██    ██ ██    ██ ██      ██
+	██ ████ ██ ██    ██ ██    ██ ███████ █████
+	██  ██  ██ ██    ██ ██    ██      ██ ██
+	██      ██  ██████   ██████  ███████ ███████
+*/
 static bool
 mui_textedit_mouse(
 		struct mui_control_t * 	c,
@@ -871,6 +907,13 @@ mui_textedit_mouse(
 	return res;
 }
 
+/*
+	██   ██ ███████ ██    ██ ██████   ██████   █████  ██████  ██████
+	██  ██  ██       ██  ██  ██   ██ ██    ██ ██   ██ ██   ██ ██   ██
+	█████   █████     ████   ██████  ██    ██ ███████ ██████  ██   ██
+	██  ██  ██         ██    ██   ██ ██    ██ ██   ██ ██   ██ ██   ██
+	██   ██ ███████    ██    ██████   ██████  ██   ██ ██   ██ ██████
+*/
 static bool
 mui_textedit_key(
 		struct mui_control_t * 	c,
@@ -1011,7 +1054,7 @@ mui_textedit_key(
 				_mui_textedit_sel_delete(te, true, true);
 			}
 		}	break;
-		case '\t': {
+		case MUI_KEY_TAB: {
 			mui_control_switch_focus(c->win,
 					ev->modifiers & MUI_MODIFIER_SHIFT ? -1 : 0);
 		}	break;

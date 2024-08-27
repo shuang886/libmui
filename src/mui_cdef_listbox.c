@@ -176,10 +176,11 @@ mui_listbox_key(
 		case MUI_KEY_DOWN: 	delta = 1;	break;
 		case MUI_KEY_PAGEUP:	delta = -page_size; break;
 		case MUI_KEY_PAGEDOWN:	delta = page_size; break;
-		case '\t':
+		case MUI_KEY_TAB:
 			mui_control_switch_focus(c->win,
 					ev->modifiers & MUI_MODIFIER_SHIFT ? -1 : 0);
-			break;
+			return true;
+		//	break;
 #if 0
 		case 13: // enter
 			mui_control_action(c, MUI_CONTROL_ACTION_SELECT,

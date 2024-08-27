@@ -434,6 +434,13 @@ typedef pixman_region32_t 	mui_region_t;
 DECLARE_C_ARRAY(mui_region_t, mui_clip_stack, 2);
 
 /*
+  ██████  ██████   █████  ██     ██  █████  ██████  ██      ███████
+  ██   ██ ██   ██ ██   ██ ██     ██ ██   ██ ██   ██ ██      ██
+  ██   ██ ██████  ███████ ██  █  ██ ███████ ██████  ██      █████
+  ██   ██ ██   ██ ██   ██ ██ ███ ██ ██   ██ ██   ██ ██      ██
+  ██████  ██   ██ ██   ██  ███ ███  ██   ██ ██████  ███████ ███████
+*/
+/*
  * The Drawable is a drawing context. The important feature
  * of this is that it keeps a context for the pixman library destination
  * image, AND also the context for the 'cg' vectorial library.
@@ -587,6 +594,13 @@ typedef struct mui_control_color_t {
 			.alpha = (_c).a * 257, .red = (_c).r * (_c).a, \
 			.green = (_c).g * (_c).a, .blue = (_c).b * (_c).a }
 
+/*
+  ███████  ██████  ███    ██ ████████       ████████ ███████ ██   ██ ████████
+  ██      ██    ██ ████   ██    ██             ██    ██       ██ ██     ██
+  █████   ██    ██ ██ ██  ██    ██    █████    ██    █████     ███      ██
+  ██      ██    ██ ██  ██ ██    ██             ██    ██       ██ ██     ██
+  ██       ██████  ██   ████    ██             ██    ███████ ██   ██    ██
+*/
 typedef struct mui_font_t {
 	mui_drawable_t			 	font;	// points to ttc pixels!
 	char * 						name;	// not filename, internal name, aka 'main'
@@ -733,7 +747,13 @@ void
 mui_font_measure_clear(
 		mui_glyph_line_array_t *lines);
 
-
+/*
+  ██     ██ ██ ███    ██ ██████   ██████  ██     ██
+  ██     ██ ██ ████   ██ ██   ██ ██    ██ ██     ██
+  ██  █  ██ ██ ██ ██  ██ ██   ██ ██    ██ ██  █  ██
+  ██ ███ ██ ██ ██  ██ ██ ██   ██ ██    ██ ██ ███ ██
+   ███ ███  ██ ██   ████ ██████   ██████   ███ ███
+*/
 enum mui_window_layer_e {
 	MUI_WINDOW_LAYER_NORMAL 	= 0,
 	MUI_WINDOW_LAYER_MODAL 		= 3,
@@ -876,8 +896,14 @@ mui_window_set_id(
 		mui_window_t *	win,
 		uint32_t 		uid);
 
+/*
+  ███    ███ ███████ ███    ██ ██    ██ ███████
+  ████  ████ ██      ████   ██ ██    ██ ██
+  ██ ████ ██ █████   ██ ██  ██ ██    ██ ███████
+  ██  ██  ██ ██      ██  ██ ██ ██    ██      ██
+  ██      ██ ███████ ██   ████  ██████  ███████
+*/
 struct mui_menu_items_t;
-
 /*
  * This is a menu item descriptor (also used for the titles, bar a few bits).
  * This is not a *control* in the window, instead this is used to describe
@@ -966,7 +992,13 @@ mui_menubar_highlight(
 		mui_window_t *	win,
 		bool 			ignored );
 
-
+/*
+   ██████  ██████  ███    ██ ████████ ██████   ██████  ██      ███████
+  ██      ██    ██ ████   ██    ██    ██   ██ ██    ██ ██      ██
+  ██      ██    ██ ██ ██  ██    ██    ██████  ██    ██ ██      ███████
+  ██      ██    ██ ██  ██ ██    ██    ██   ██ ██    ██ ██           ██
+   ██████  ██████  ██   ████    ██    ██   ██  ██████  ███████ ███████
+*/
 enum mui_button_style_e {
 	MUI_BUTTON_STYLE_NORMAL = 0,
 	MUI_BUTTON_STYLE_DEFAULT = 1,
@@ -1148,6 +1180,10 @@ mui_groupbox_new(
 		c2_rect_t 		frame,
 		const char *	title,
 		uint32_t		flags );
+mui_control_t *
+mui_separator_new(
+		mui_window_t * 	win,
+		c2_rect_t 		frame);
 /*
  * Text editor control
  */
@@ -1171,6 +1207,11 @@ mui_textedit_set_selection(
 		mui_control_t * c,
 		uint			start,
 		uint			end);
+uint
+mui_textedit_get_text(
+		mui_control_t * c,
+		char *	 		text,
+		uint  			len);
 
 /* Page step and line step are optional, they default to '30' pixels and
  * the 'visible' area of the scrollbar, respectively.
@@ -1209,10 +1250,6 @@ mui_listbox_elems_t *
 mui_listbox_get_elems(
 		mui_control_t * c);
 
-mui_control_t *
-mui_separator_new(
-		mui_window_t * 	win,
-		c2_rect_t 		frame);
 /* Popup menu control.
  * flags are MUI_TEXT_ALIGN_* -- however this corresponds to the margins
  * of the popup control itself when placed into it's 'frame' -- the
@@ -1281,6 +1318,16 @@ mui_stdfile_get(
 char *
 mui_stdfile_get_selected_path(
 		mui_window_t * w );
+
+mui_window_t *
+mui_stdfile_put(
+		struct mui_t * 	ui,
+		c2_pt_t 		where,			// pass 0,0 to center
+		const char * 	prompt,			// Window title
+		const char * 	pattern,		// Enforce any of these suffixes
+		const char * 	start_path,		// start in this path (optional)
+		const char * 	save_filename,	// start with this filename
+		uint16_t 		flags );
 
 /*
  * Alert dialog
@@ -1357,6 +1404,13 @@ mui_timer_reset(
 		mui_timer_p 	cb,
 		mui_time_t 		delay);
 
+/*
+   ██████  ███████ ███    ██ ███████ ██████   █████  ██
+  ██       ██      ████   ██ ██      ██   ██ ██   ██ ██
+  ██   ███ █████   ██ ██  ██ █████   ██████  ███████ ██
+  ██    ██ ██      ██  ██ ██ ██      ██   ██ ██   ██ ██
+   ██████  ███████ ██   ████ ███████ ██   ██ ██   ██ ███████
+*/
 /*
  * This is the head of the mui library, it contains the screen size,
  * the color scheme, the list of windows, the list of fonts, and the
@@ -1453,4 +1507,4 @@ mui_has_active_windows(
 /* Return a hash value for string inString */
 uint32_t
 mui_hash(
-	const char * 		inString );
+		const char * 		inString );

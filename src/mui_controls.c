@@ -465,6 +465,6 @@ mui_control_switch_focus(
 			break;
 	} while (c != start);
 	mui_control_set_focus(c);
-	printf("focus %4.4s %s\n", (char*)&c->type, c->title);
+//	printf("%s %4.4s %s\n", __func__, (char*)&c->type, c->title);
 	return c;
 }

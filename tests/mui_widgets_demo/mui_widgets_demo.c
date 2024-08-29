@@ -206,7 +206,8 @@ _test_demo_all_controls(
 		c2_rect_offset(&wpos,
 			(ui->screen_size.x / 2) - (c2_rect_width(&wpos) / 2),
 			(ui->screen_size.y * 0.45) - (c2_rect_height(&wpos) / 2));
-	w = mui_window_create(ui, wpos, NULL, MUI_WINDOW_LAYER_NORMAL,
+	w = mui_window_create(ui, wpos, NULL,
+					MUI_WINDOW_LAYER_NORMAL + MUI_WINDOW_FLAGS_CLOSEBOX,
 					"Control Demo", 0);
 	mui_window_set_id(w, FCC('d','e','m','o'));
 

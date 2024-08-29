@@ -145,6 +145,8 @@ typedef enum mui_modifier_e {
 #define MUI_GLYPH_SUBMENU		"▶"	// custom, for the hierarchical menus
 #define MUI_GLYPH_IIE			""	// custom, IIe glyph
 #define MUI_GLYPH_POPMARK		"▼"	// custom, popup menu marker
+#define MUI_GLYPH_CLOSEBOX		"☐"	// custom, close box
+#define MUI_GLYPH_CLICKBOX		"☒"	// custom, clicked (close, zoom?) box
 /* These are also from Charcoal System font (added to the original) */
 #define MUI_GLYPH_F1			""
 #define MUI_GLYPH_F2			""
@@ -759,14 +761,21 @@ enum mui_window_layer_e {
 	MUI_WINDOW_LAYER_MODAL 		= 3,
 	MUI_WINDOW_LAYER_ALERT 		= 5,
 	MUI_WINDOW_LAYER_TOP 		= 15,
+	MUI_WINDOW_LAYER_MASK 		= 0x0F,	// mask layer bits
 	// Menubar and Menus (popups) are also windows
 	MUI_WINDOW_MENUBAR_LAYER 	= MUI_WINDOW_LAYER_TOP - 1,
 	MUI_WINDOW_MENU_LAYER,
+
+	MUI_WINDOW_FLAGS_CLOSEBOX 	= 0x100,
 };
 
 enum mui_window_action_e {
 	MUI_WINDOW_ACTION_NONE 		= 0,
+	// window is closing. param is NULL
 	MUI_WINDOW_ACTION_CLOSE		= FCC('w','c','l','s'),
+	// closebox has been clicked. param is a bool* with 'true' (default) if
+	// the window should be closed. 'false' if it shouldn't be close now
+	MUI_WINDOW_ACTION_CLOSEBOX	= FCC('w','c','b','x'),
 };
 
 /*
@@ -809,13 +818,15 @@ typedef struct mui_window_t {
 		uint						hidden: 1,
 									disposed : 1,
 									layer : 4,
+									closebox : 1,
 									style: 4,	// specific to the WDEF
-									hit_part : 8;
+									hit_part : 8, in_part : 8;
 	}							flags;
 	c2_pt_t 					click_loc;
 	// both these rectangles are in screen coordinates, even tho
 	// 'contents' is fully included in 'frame'
-	c2_rect_t					frame, content;
+	c2_rect_t					frame;
+	c2_rect_t					content;
 	char *						title;
 	mui_action_queue_t			actions;
 	TAILQ_HEAD(controls, mui_control_t) controls;
@@ -843,7 +854,7 @@ mui_window_create(
 		struct mui_t *	ui,
 		c2_rect_t 		frame,
 		mui_wdef_p 		wdef,
-		uint8_t 		layer,
+		uint32_t 		layer_flags,
 		const char *	title,
 		uint32_t 		instance_size);
 // Dispose of a window and it's content (controls).

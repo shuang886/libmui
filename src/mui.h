@@ -18,7 +18,7 @@
 #include <pixman.h>
 #include "c2_arrays.h"
 
-#ifdef __wasm__
+#if defined(__wasm__) || defined(__APPLE__)
 typedef unsigned int uint;
 #endif
 

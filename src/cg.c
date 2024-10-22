@@ -30,8 +30,10 @@
 // make this optional on darwin, where the is no weak linking
 #if defined(__APPLE__) && defined(__MACH__)
 #define CG_WEAK_LINKING 0
+#define WEAK
 #else
 #define CG_WEAK_LINKING 1
+#define WEAK static
 #endif
 
 #if CG_WEAK_LINKING
@@ -41,6 +43,15 @@
 	extern __typeof(__##_name) _name __attribute__((weak, alias(_cg_und(_name))))
 #else
 #define cg_weak_alias(_name)
+#define __cg_comp_destination_in cg_comp_destination_in
+#define __cg_comp_destination_out cg_comp_destination_out
+#define __cg_comp_solid_destination_in cg_comp_solid_destination_in
+#define __cg_comp_solid_destination_out cg_comp_solid_destination_out
+#define __cg_comp_solid_source cg_comp_solid_source
+#define __cg_comp_solid_source_over cg_comp_solid_source_over
+#define __cg_comp_source cg_comp_source
+#define __cg_comp_source_over cg_comp_source_over
+#define __cg_memfill32 cg_memfill32
 #endif
 
 #define cg_array_init(array) \
@@ -1458,7 +1469,7 @@ typedef uint32_t u32_v __attribute__((vector_size(16)));
 #endif
 
 
-static void __cg_memfill32(uint32_t * dst, uint32_t val, int len)
+WEAK void __cg_memfill32(uint32_t * dst, uint32_t val, int len)
 {
 	// use extensions to do the first part, as long as it is aligned properly
 	while (len > 0 && ((uintptr_t)dst & VEC_ALIGN)) {
@@ -1641,7 +1652,7 @@ static inline void fetch_radial_gradient(uint32_t * buffer, struct cg_radial_gra
 	}
 }
 
-static void __cg_comp_solid_source(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
+WEAK void __cg_comp_solid_source(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
 {
 	if(alpha == 255)
 	{
@@ -1657,7 +1668,7 @@ static void __cg_comp_solid_source(uint32_t * dst, int len, uint32_t color, uint
 }
 cg_weak_alias(cg_comp_solid_source);
 
-static void __cg_comp_solid_source_over(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
+WEAK void __cg_comp_solid_source_over(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
 {
 	if((alpha & CG_ALPHA(color)) == 255)
 	{
@@ -1674,7 +1685,7 @@ static void __cg_comp_solid_source_over(uint32_t * dst, int len, uint32_t color,
 }
 cg_weak_alias(cg_comp_solid_source_over);
 
-static void __cg_comp_solid_destination_in(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
+WEAK void __cg_comp_solid_destination_in(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
 {
 	uint32_t a = CG_ALPHA(color);
 	if(alpha != 255)
@@ -1684,7 +1695,7 @@ static void __cg_comp_solid_destination_in(uint32_t * dst, int len, uint32_t col
 }
 cg_weak_alias(cg_comp_solid_destination_in);
 
-static void __cg_comp_solid_destination_out(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
+WEAK void __cg_comp_solid_destination_out(uint32_t * dst, int len, uint32_t color, uint32_t alpha)
 {
 	uint32_t a = CG_ALPHA(~color);
 	if(alpha != 255)
@@ -1694,7 +1705,7 @@ static void __cg_comp_solid_destination_out(uint32_t * dst, int len, uint32_t co
 }
 cg_weak_alias(cg_comp_solid_destination_out);
 
-static void __cg_comp_source(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
+WEAK void __cg_comp_source(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
 {
 	if(alpha == 255)
 	{
@@ -1709,7 +1720,7 @@ static void __cg_comp_source(uint32_t * dst, int len, uint32_t * src, uint32_t a
 }
 cg_weak_alias(cg_comp_source);
 
-static void __cg_comp_source_over(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
+WEAK void __cg_comp_source_over(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
 {
 	uint32_t s, sia;
 	if(alpha == 255)
@@ -1738,7 +1749,7 @@ static void __cg_comp_source_over(uint32_t * dst, int len, uint32_t * src, uint3
 }
 cg_weak_alias(cg_comp_source_over);
 
-static void __cg_comp_destination_in(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
+WEAK void __cg_comp_destination_in(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
 {
 	if(alpha == 255)
 	{
@@ -1758,7 +1769,7 @@ static void __cg_comp_destination_in(uint32_t * dst, int len, uint32_t * src, ui
 }
 cg_weak_alias(cg_comp_destination_in);
 
-static void __cg_comp_destination_out(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
+WEAK void __cg_comp_destination_out(uint32_t * dst, int len, uint32_t * src, uint32_t alpha)
 {
 	if(alpha == 255)
 	{
